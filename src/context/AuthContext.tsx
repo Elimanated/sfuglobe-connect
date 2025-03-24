@@ -22,7 +22,7 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, name: string) => Promise<void>;
+  signup: (email: string, password: string, name: string, studentId?: string) => Promise<void>;
   logout: () => void;
   updateProfile: (data: Partial<Profile>) => Promise<void>;
   isAuthenticated: boolean;
@@ -148,7 +148,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signup = async (email: string, password: string, name: string) => {
+  const signup = async (email: string, password: string, name: string, studentId?: string) => {
     try {
       setLoading(true);
       const { error } = await supabase.auth.signUp({
@@ -157,6 +157,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         options: {
           data: {
             name,
+            student_id: studentId,
           },
         },
       });
@@ -199,6 +200,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         bio: data.bio,
         program: data.program,
         year: data.year,
+        student_id: data.studentId,
         updated_at: new Date().toISOString(),
       };
       

@@ -10,6 +10,7 @@ const LandingPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [studentId, setStudentId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login, signup } = useAuth();
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const LandingPage = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await signup(email, password, name);
+      await signup(email, password, name, studentId);
       setActiveTab("login");
     } catch (error) {
       console.error('Signup error:', error);
@@ -116,6 +117,20 @@ const LandingPage = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="John Smith"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="student-id" className="block text-sm font-medium mb-1">
+                    Student ID
+                  </label>
+                  <Input
+                    id="student-id"
+                    type="text"
+                    value={studentId}
+                    onChange={(e) => setStudentId(e.target.value)}
+                    placeholder="301xxxxxx"
                     required
                   />
                 </div>
