@@ -99,7 +99,7 @@ const ClubPage = () => {
   const { user } = useAuth();
   const [clubs, setClubs] = useState<Club[]>(mockClubs);
   const [selectedClub, setSelectedClub] = useState<Club | null>(null);
-  const [viewMode, setViewMode = useState<'list' | 'details' | 'members' | 'requests'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'details' | 'members' | 'requests'>('list');
 
   // Check if current user is a member or coordinator of the selected club
   const getUserRole = (club: Club) => {
