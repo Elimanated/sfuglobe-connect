@@ -2,21 +2,38 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const LandingPage = () => {
+  const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, signup } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       await login(email, password);
     } catch (error) {
       console.error('Login error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      await signup(email, password, name);
+      setActiveTab("login");
+    } catch (error) {
+      console.error('Signup error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -36,55 +53,117 @@ const LandingPage = () => {
         </div>
       </div>
 
-      {/* Login Form */}
+      {/* Auth Form */}
       <div className="w-full md:w-2/5 p-8 flex items-center justify-center">
         <div className="w-full max-w-md glass-card p-8 rounded-lg animate-scale-in">
-          <h2 className="text-2xl font-semibold mb-6 text-center">Sign In</h2>
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/30"
-                placeholder="your.email@sfu.ca"
-                required
-              />
-            </div>
+          <Tabs defaultValue="login" value={activeTab} onValueChange={(value) => setActiveTab(value as "login" | "signup")}>
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="login">Sign In</TabsTrigger>
+              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+            </TabsList>
             
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-1">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/30"
-                placeholder="••••••••"
-                required
-              />
-            </div>
+            <TabsContent value="login">
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium mb-1">
+                    Email
+                  </label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your.email@sfu.ca"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium mb-1">
+                    Password
+                  </label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full btn-primary py-2"
+                  >
+                    {isLoading ? 'Signing in...' : 'Sign In'}
+                  </button>
+                </div>
+              </form>
+            </TabsContent>
             
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full btn-primary py-2"
-              >
-                {isLoading ? 'Signing in...' : 'Sign In'}
-              </button>
-            </div>
-          </form>
+            <TabsContent value="signup">
+              <form onSubmit={handleSignup} className="space-y-4">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium mb-1">
+                    Full Name
+                  </label>
+                  <Input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="John Smith"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="signup-email" className="block text-sm font-medium mb-1">
+                    Email
+                  </label>
+                  <Input
+                    id="signup-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your.email@sfu.ca"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="signup-password" className="block text-sm font-medium mb-1">
+                    Password
+                  </label>
+                  <Input
+                    id="signup-password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    minLength={6}
+                  />
+                </div>
+                
+                <div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full btn-primary py-2"
+                  >
+                    {isLoading ? 'Creating account...' : 'Create Account'}
+                  </button>
+                </div>
+              </form>
+            </TabsContent>
+          </Tabs>
           
           <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>For demo purposes, you can sign in with any email and password</p>
+            <p>Create an account or sign in to get started</p>
           </div>
         </div>
       </div>
