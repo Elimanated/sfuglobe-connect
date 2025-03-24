@@ -1,9 +1,8 @@
-
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { 
   Users, 
-  Basketball, 
+  Dumbbell, 
   Palette, 
   BadgePlus, 
   Eye, 
@@ -35,7 +34,7 @@ const mockClubs: Club[] = [
   {
     id: 'club1',
     name: 'Basketball Club',
-    icon: Basketball,
+    icon: Dumbbell, // Changed from Basketball to Dumbbell icon
     description: 'Join us for weekly basketball games and training sessions. All skill levels welcome!',
     coordinator: {
       id: 'mem1',
@@ -100,7 +99,7 @@ const ClubPage = () => {
   const { user } = useAuth();
   const [clubs, setClubs] = useState<Club[]>(mockClubs);
   const [selectedClub, setSelectedClub] = useState<Club | null>(null);
-  const [viewMode, setViewMode] = useState<'list' | 'details' | 'members' | 'requests'>('list');
+  const [viewMode, setViewMode = useState<'list' | 'details' | 'members' | 'requests'>('list');
 
   // Check if current user is a member or coordinator of the selected club
   const getUserRole = (club: Club) => {
