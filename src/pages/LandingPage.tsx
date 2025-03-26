@@ -1,12 +1,12 @@
 
 import { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from '../context/AuthContext';
+import { Input } from '@/components/ui/input';
+import { X, ChevronRight } from 'lucide-react';
 
 const LandingPage = () => {
-  const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
+  const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -41,71 +41,96 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Hero Section */}
-      <div className="w-full md:w-3/5 bg-gradient-to-br from-primary/90 to-primary p-8 flex items-center justify-center">
-        <div className="max-w-md text-center md:text-left">
-          <div className="animate-fade-in">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Welcome to SFU Globe</h1>
-            <p className="text-white/80 mb-8">
-              Connect with students, join clubs, ace quizzes, and more - all in one place.
-            </p>
-          </div>
+    <div className="min-h-screen flex flex-col bg-black text-white">
+      {/* Header */}
+      <header className="border-b border-white/10 p-4">
+        <div className="container mx-auto">
+          <h1 className="text-2xl md:text-3xl font-bold">SFU Study Buddy</h1>
         </div>
-      </div>
+      </header>
 
-      {/* Auth Form */}
-      <div className="w-full md:w-2/5 p-8 flex items-center justify-center">
-        <div className="w-full max-w-md glass-card p-8 rounded-lg animate-scale-in">
-          <Tabs defaultValue="login" value={activeTab} onValueChange={(value) => setActiveTab(value as "login" | "signup")}>
-            <TabsList className="grid w-full grid-cols-2 mb-6">
-              <TabsTrigger value="login">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="login">
+      {/* Main Content */}
+      <main className="flex-1 flex items-center justify-center py-12 px-4">
+        <div className="w-full max-w-md">
+          <div className="glass-card p-8 rounded-xl border border-white/10 backdrop-blur-md bg-white/5">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-2">Welcome</h2>
+              <p className="text-white/70">Connect with fellow students and excel in your studies</p>
+            </div>
+
+            {/* Tab Selection */}
+            <div className="flex border-b border-white/10 mb-6">
+              <button
+                className={`flex-1 pb-3 font-medium transition-colors ${
+                  activeTab === 'login' 
+                    ? 'text-white border-b-2 border-white' 
+                    : 'text-white/50 hover:text-white/80'
+                }`}
+                onClick={() => setActiveTab('login')}
+              >
+                Login
+              </button>
+              <button
+                className={`flex-1 pb-3 font-medium transition-colors ${
+                  activeTab === 'signup' 
+                    ? 'text-white border-b-2 border-white' 
+                    : 'text-white/50 hover:text-white/80'
+                }`}
+                onClick={() => setActiveTab('signup')}
+              >
+                Sign Up
+              </button>
+            </div>
+
+            {/* Login Form */}
+            {activeTab === 'login' && (
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium mb-1">
+                  <label htmlFor="login-email" className="block text-sm font-medium mb-1">
                     Email
                   </label>
                   <Input
-                    id="email"
+                    id="login-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your.email@sfu.ca"
+                    placeholder="your.email@example.com"
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
                     required
                   />
                 </div>
                 
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium mb-1">
+                  <label htmlFor="login-password" className="block text-sm font-medium mb-1">
                     Password
                   </label>
                   <Input
-                    id="password"
+                    id="login-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
                     required
                   />
                 </div>
                 
-                <div>
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full btn-primary py-2"
-                  >
-                    {isLoading ? 'Signing in...' : 'Sign In'}
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-white text-black hover:bg-white/90 py-2 rounded-md font-medium mt-2 flex items-center justify-center transition-colors"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="animate-pulse">Logging in...</span>
+                  ) : (
+                    <span className="flex items-center">Login <ChevronRight className="ml-1 h-4 w-4" /></span>
+                  )}
+                </button>
               </form>
-            </TabsContent>
-            
-            <TabsContent value="signup">
+            )}
+
+            {/* Signup Form */}
+            {activeTab === 'signup' && (
               <form onSubmit={handleSignup} className="space-y-4">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium mb-1">
@@ -116,7 +141,8 @@ const LandingPage = () => {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="John Smith"
+                    placeholder="John Doe"
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
                     required
                   />
                 </div>
@@ -131,6 +157,7 @@ const LandingPage = () => {
                     value={studentId}
                     onChange={(e) => setStudentId(e.target.value)}
                     placeholder="301xxxxxx"
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
                     required
                   />
                 </div>
@@ -144,7 +171,8 @@ const LandingPage = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your.email@sfu.ca"
+                    placeholder="your.email@example.com"
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
                     required
                   />
                 </div>
@@ -159,29 +187,32 @@ const LandingPage = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
+                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
                     required
-                    minLength={6}
                   />
                 </div>
                 
-                <div>
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full btn-primary py-2"
-                  >
-                    {isLoading ? 'Creating account...' : 'Create Account'}
-                  </button>
-                </div>
+                <button
+                  type="submit"
+                  className="w-full bg-white text-black hover:bg-white/90 py-2 rounded-md font-medium mt-2 flex items-center justify-center transition-colors"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <span className="animate-pulse">Creating account...</span>
+                  ) : (
+                    <span className="flex items-center">Sign Up <ChevronRight className="ml-1 h-4 w-4" /></span>
+                  )}
+                </button>
               </form>
-            </TabsContent>
-          </Tabs>
-          
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>Create an account or sign in to get started</p>
+            )}
           </div>
         </div>
-      </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-white/10 p-4 text-center text-white/50">
+        <p>© {new Date().getFullYear()} SFU Study Buddy. All rights reserved.</p>
+      </footer>
     </div>
   );
 };

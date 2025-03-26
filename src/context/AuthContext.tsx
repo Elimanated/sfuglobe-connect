@@ -69,12 +69,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               setUser({
                 id: profile.id,
                 name: profile.username,
-                email: profile.email,
+                email: profile.email || session.user.email,
                 studentId: profile.student_id,
                 avatar: profile.avatar,
                 bio: profile.bio,
                 program: profile.program,
-                year: profile.year
+                year: profile.year,
+                username: profile.username
               });
             }
           } catch (error) {
@@ -106,12 +107,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               setUser({
                 id: profile.id,
                 name: profile.username,
-                email: profile.email,
+                email: profile.email || session.user.email,
                 studentId: profile.student_id,
                 avatar: profile.avatar,
                 bio: profile.bio,
                 program: profile.program,
-                year: profile.year
+                year: profile.year,
+                username: profile.username
               });
             }
             setLoading(false);
